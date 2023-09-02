@@ -1,20 +1,20 @@
 function deleteTask(tasks, taskId) {
   return new Promise((resolve, reject) => {
     if (tasks.length === 0) {
-      reject(new Error("No hay ninguna tarea para eliminar."));
+      reject(new Error("No hay tareas por eliminar."));
       return;
     }
 
-    // se encuentra el indice de la tarea con el ID correspondiente
+    // Se encuentra el indice de la tarea con el ID correspondiente
     const taskIndex = tasks.findIndex((task) => task.id === parseInt(taskId));
 
-    // verifica si la tarea no se encontro
+    // Funcion para verificar si la tarea no se encontro
     if (taskIndex === -1) {
-      reject(new Error("La tarea no existe."));
+      reject(new Error("La tarea especificada no existe."));
       return;
     }
 
-    tasks.splice(taskIndex, 1); // Eliminar la tarea seleccionada del array de tareas
+    tasks.splice(taskIndex, 1); //Se elimina la tarea seleccionada del array de tareas
     console.log("Tarea eliminada correctamente.");
     resolve();
   });
