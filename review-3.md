@@ -7,3 +7,4 @@ Funcionalidades principales.
 Añadir Tareas.
 Eliminar Tareas.
 Completar Tareas.
+Filtrar tareas por estado y ver tareas por su ID
