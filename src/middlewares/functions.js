@@ -1,4 +1,6 @@
 const jwt = require("jsonwebtoken");
+
+//Se valida el metodo HTTP de la solicitud.
 const Middleware = (req, res, next) => {
   const metodo = req.method;
 
@@ -14,6 +16,7 @@ const Middleware = (req, res, next) => {
   }
 };
 
+// valida si el cuerpo de la solicitud no esta vacío
 function validateBody(req, res, next) {
   if (Object.values(req.body).length === 0) {
     res.status(400).send("Es requirido un body");
@@ -22,6 +25,7 @@ function validateBody(req, res, next) {
   }
 }
 
+// valida la info de una tarea en la solicitud
 function validateInfo(req, res, next) {
   const { description, completed } = req.body;
   if (!description || typeof description !== "string") {
@@ -37,6 +41,7 @@ function validateInfo(req, res, next) {
   }
 }
 
+// valida el param 'status' en una solicitud.
 function validateStatusParam(req, res, next) {
   const { status } = req.params;
   if (status && status !== "completed" && status !== "incomplete") {
@@ -45,7 +50,7 @@ function validateStatusParam(req, res, next) {
   next();
 }
 
-// Middleware de autenticación
+// Middleware de autenticación para verificar y decodificar un token
 
 function authMiddleware(req, res, next) {
   // Obtenemos el secreto de los variables de entorno
@@ -63,8 +68,13 @@ function authMiddleware(req, res, next) {
   const token = authHeader.split(" ")[1];
 
   try {
-    //Se Verifica y decodificar el token JWT
+    // Verificar y decodificar el token JWT
     const decodedToken = jwt.verify(token, secret);
+
+    // verificar la expiracion
+    if (decodedToken.exp <= Math.floor(Date.now() / 1000)) {
+      return res.status(401).json({ message: "Token expirado" });
+    }
 
     // Agregar el objeto decodificado del token JWT al objeto de solicitud
 
@@ -74,7 +84,7 @@ function authMiddleware(req, res, next) {
 
     next();
   } catch (err) {
-    //Se Envia respuesta de error si el token es inválido
+    //se envia respuesta de error si el token es inválido
 
     return res.status(401).json({ message: "Token de autorización inválido" });
   }
@@ -84,7 +94,7 @@ function authMiddleware(req, res, next) {
 
 function roleMiddleware(roles) {
   return (req, res, next) => {
-    //Se Verifica si el usuario está autenticado y tiene un rol
+    // Verifica si el usuario está autenticado y tiene un rol
     if (!req.user || !req.user.rol) {
       return res.status(401).json({
         message: "Acceso no autorizado: usuario no autenticado o sin rol",

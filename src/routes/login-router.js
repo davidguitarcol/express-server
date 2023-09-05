@@ -23,7 +23,7 @@ router.post("/", (req, res) => {
     };
 
     //invocamos la libreria para crear el token
-    const token = jwt.sign(payload, secret);
+    const token = jwt.sign(payload, secret, { expiresIn: 15 * 60 });
     res.send({
       message: "Autenticación exitosa",
       token,
